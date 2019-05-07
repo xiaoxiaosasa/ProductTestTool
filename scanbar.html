@@ -1,0 +1,71 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+    <!--<meta charset="UTF-8">-->
+    <!--<title>Title</title>-->
+    <!--<style type="text/css">-->
+        <!--#imgbar{-->
+            <!--width:200px;-->
+            <!--height: 200px;-->
+            <!--align:middle ;-->
+            <!---->
+        <!--}-->
+    <!--</style>-->
+    <!---->
+    <!--<div>-->
+        <!--<img id="imgbar" src="qb.bmp" >-->
+    <!--</div>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二维码</title>
+    <style type="text/css">
+        *{
+            margin:0;
+            padding:0;
+        }
+        div.container{
+            /*background-color:pink;*/
+            /*border:2px solid #000;*/
+            width:500px;
+            height:500px;
+            margin:50px auto;
+            display:table;
+        }
+        div.wrapper{
+            text-align:center;
+            display:table-cell;
+            vertical-align:middle;
+        }
+        div.wrapper img{
+            border:1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+            <div class="wrapper">
+                <img src="qb.bmp" alt="二维码" id="test"/>
+            </div>
+    </div>
+    <script type="text/javascript">
+    function change(n){
+    if(n>5)
+        n=1;
+        document.getElementById("test").setAttribute("src", n+".bmp");
+        n++;
+        setTimeout("change("+n+")",1000);
+    }
+    window.onload = function(){
+        setTimeout("change(1)", 1000);
+    }
+    </script>
+</body>
+</html>

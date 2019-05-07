@@ -1,0 +1,16 @@
+{
+  "mp3":"1.mp3",
+  "printerCom":"com3",
+  "casherCom":4,
+  "scanInfo":"http://www.baidu.com",
+  "key3":[3,"呼叫"],
+  "key4":[4,"打印"],
+  "key2":[2,"微动开关"],
+  "key1":[1,"车检器"],
+  "out1":[6,"肩膀灯"],
+  "out2":[7,"肚子灯"],
+  "out3":[8,"灯带"],
+  "out4":[9,"灯带"],
+  "TIMEOUT":10,
+  "isEntry":"False"
+}
