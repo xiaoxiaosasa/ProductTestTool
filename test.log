@@ -1,6 +1,0 @@
-2019-05-06 16:30:50,048 - C:\Users\HP\Desktop\DeviceTest\DeviceTest\DevMwnd.py[line:564] - ERROR: 打印机启动失败，请检查是否正确连接
-2019-05-06 16:30:50,055 - C:\Users\HP\Desktop\DeviceTest\DeviceTest\DevMwnd.py[line:564] - ERROR: 扫码枪连接失败，请插入扫码枪
-2019-05-06 16:30:50,657 - C:\Users\HP\Desktop\DeviceTest\DeviceTest\DevMwnd.py[line:564] - ERROR: 吃钞机启动失败，请检查接线是否正确
-2019-05-06 16:30:50,659 - C:\Users\HP\Desktop\DeviceTest\DeviceTest\DevMwnd.py[line:564] - ERROR: 吃钞票机连接失败，请检查连线！
-2019-05-06 16:30:50,660 - C:\Users\HP\Desktop\DeviceTest\DeviceTest\DevMwnd.py[line:564] - ERROR: GPIO 启动失败！
-2019-05-06 17:16:13,008 - C:\Users\HP\Desktop\DeviceTest\DeviceTest\DevMwnd.py[line:564] - ERROR: 打印机启动失败，请检查是否正确连接

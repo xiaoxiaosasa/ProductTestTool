@@ -274,6 +274,7 @@ class Casher():
         self.timeout = CFG['TIMEOUT']
         self.isopen= -1
         self.openDevice(com)  # 传入的参数即串口序号
+        self.currentTime = 0
 
     def __CheckGenericResponses(self, cmd):
         rd = cmd.ResponseData[0]
@@ -390,25 +391,40 @@ class Casher():
         commandStructure.CommandData[0] = SSP_CMD_POLL
         commandStructure.CommandDataLength = 1
         res = self.dll.SSPSendCommand(byref(commandStructure), byref(info))
-        print("SSP_CMD_POLL", res, "responseDataLen:", commandStructure.ResponseDataLength)
+        print(time.strftime("%Y-%m-%d %H:%M:%S",time.localtime()),"*****************************************SSP_CMD_POLL", res, "responseDataLen:", commandStructure.ResponseDataLength)
         resData = commandStructure.ResponseData[1:commandStructure.ResponseDataLength]
         if len(resData) != 1:  # 空闲状态，不打印了
             for r in range(len(resData)):
                 x = resData[r]
                 # print("POLL-%d/%d:"%(r,len(resData)),RESPONSE_NAMES[x] if x in RESPONSE_NAMES else hex(x))
-                print("POLL-%d/%d:" % (r, len(resData)), RESPONSE_NAMES[x] if x in RESPONSE_NAMES else x)
+                print("POLL-%d/%d:" % (r, len(resData)+1), RESPONSE_NAMES[x] if x in RESPONSE_NAMES else x)
+                # if resData[r] ==SSP_POLL_CREDIT:
+                #     self.value = money[resData[r+1]]
+                #     print('value is %d'% self.value)
+                # elif resData==SSP_POLL_STACKER_FULL:
+                #     print('钱箱已满')
+                #     self.ui.logUi.log('钱箱已满，请及时清空')
+            if commandStructure.ResponseDataLength == 5 and commandStructure.ResponseData[4] == SSP_POLL_STACKED:
+          #  if commandStructure.ResponseData[4] == SSP_POLL_STACKED or commandStructure.ResponseData[4] == SSP_POLL_STACKING :
+                value = commandStructure.ResponseData[2]
+                self.value=money[value]
+                print('value is %d' % self.value)
+            elif commandStructure.ResponseDataLength == 3 and commandStructure.ResponseData[1] == SSP_POLL_CREDIT:
+                value = commandStructure.ResponseData[2]
+                self.value = money[value]
+                print('value is %d' % self.value)
+            elif commandStructure.ResponseDataLength == 6 and commandStructure.ResponseData[5]==SSP_POLL_STACKER_FULL:
+                print('钱箱已满')
+                self.ui.logUi.log('钱箱已满，请及时清空')
+            elif commandStructure.ResponseData[ commandStructure.ResponseDataLength-1] == SSP_POLL_DISABLED:
+                self.startToRecvCash()
+            elif commandStructure.ResponseData[1]== SSP_POLL_NOTE_READ:
+                if self.timeout - self.currentTime <2 :
+                    print('距离超时%f秒,加时5秒' % (self.timeout - self.currentTime))
+                    self.timeout += 5
 
-        if commandStructure.ResponseDataLength == 5 and commandStructure.ResponseData[4] == SSP_POLL_STACKED:
-            value = commandStructure.ResponseData[2]
-            self.value=money[value]
-            print('value is %d' % self.value)
-        elif commandStructure.ResponseDataLength == 3 and commandStructure.ResponseData[1] == SSP_POLL_CREDIT:
-            value = commandStructure.ResponseData[2]
-            self.value = money[value]
-            print('value is %d' % self.value)
-        elif commandStructure.ResponseDataLength == 6 and commandStructure.ResponseData[5]==SSP_POLL_STACKER_FULL:
-            print('钱箱已满')
-            self.ui.logUi.log('钱箱已满，请及时清空')
+
+     #   time.sleep(1)
 
 
 
@@ -421,6 +437,7 @@ class Casher():
         res = self.dll.SSPSendCommand(byref(commandStructure), byref(info))
         print("disable:", res)
         self.__CheckGenericResponses(commandStructure)
+
 
 
     def getMoney(self,com,cost):
@@ -444,24 +461,20 @@ class Casher():
 
     def TestMoney(self,cost):
         '''支付（收钱）'''
-
         # time.sleep(1)
         self.startToRecvCash()
         status = 'false'
 
-        t = 0
-        while  t<self.timeout:
+        while  self.currentTime<self.timeout:
+          #  time.sleep(20)
             self.state()
             if self.value == 0:
                 time.sleep(0.5)
-                t+=0.5
-                if t == self.timeout:
+                self.currentTime+=0.5
+                if  self.currentTime >= self.timeout:
                     self.ui.logUi.log('等待超时')
-
             else:
-
                 self.ui.logUi.log('结束吃钞')
-
                 if self.value == cost:
                     status='true'
                 else:
@@ -474,7 +487,6 @@ class Casher():
         self.isRunning = False
         self.ui.emit(self.ui.CASHTEST, cost, status)
         self.finishRecvCash()
-        # self.stopDevice()
         self.dll.CloseSSPComPortUSB()
 
 
@@ -482,7 +494,7 @@ class Casher():
         self.startToRecvCash()
 
         while self.isRunning :
-            time.sleep(0.5)
+            time.sleep(0.05)
             self.state()
         self.finishRecvCash()
         self.dll.CloseSSPComPortUSB()

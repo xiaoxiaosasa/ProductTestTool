@@ -535,7 +535,7 @@ class LogUi:
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
 
-        fh = logging.handlers.RotatingFileHandler('test.log', maxBytes=1024 * 1024 * 10, backupCount=5,
+        fh = logging.handlers.RotatingFileHandler(str(time.strftime('%Y%m%d%H%M%S',time.localtime()))+'.log', maxBytes=1024 * 1024 * 10, backupCount=5,
                                                   encoding='utf-8')
         fh.setLevel(logging.DEBUG)
 

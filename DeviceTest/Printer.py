@@ -273,7 +273,7 @@ class Printer:
 
         self.closeCom()
         self.ui.emit(self.ui.LOGPRINT, "----------打印机已关闭----------------")
-
+        time.sleep(60*2)
 
 if __name__ == '__main__':
     printer = Printer('com3')
